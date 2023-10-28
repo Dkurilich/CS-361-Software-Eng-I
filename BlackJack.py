@@ -30,7 +30,6 @@ print(rules)
 start_game = "To start playing press enter: "
 input(start_game)
 
-
 class Card:
     """represents an individual card used in the game"""
 
@@ -42,7 +41,7 @@ class Card:
 
     def print_card(self):
         print(" -------------")
-        print("| " + self.suit + "          |")
+        print("| " + self.suit + "           |")
         print("|             |")
         print("|             |")
         if self.name == "10":
@@ -51,7 +50,7 @@ class Card:
             print("|     " + self.name + "       |")
         print("|             |")
         print("|             |")
-        print("|           " + self.suit + "|")
+        print("|           " + self.suit + " |")
         print(" -------------")
 
     def print_blank_card(self):
@@ -70,7 +69,7 @@ class CardDeck:
     """This class generates cards for gameplay and tracks cards active in the game"""
 
     def __init__(self):
-        self.suits = ["♡", "♢", "♧", "♤"]
+        self.suits = ["♥","♦","♣","♠"]
         self.values = [("A", 1), ("K", 10), ("Q", 10), ("J", 10), ("10", 10), ("9", 9), ("8", 8), ("7", 7),
                        ("6", 6), ("5", 5), ("4", 4), ("3", 3), ("2", 2)]
         self.dealt_cards = []
