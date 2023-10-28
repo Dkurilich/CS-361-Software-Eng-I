@@ -10,25 +10,25 @@ import random
 
 # introduction code to define game play
 
-# intro_text = "\nHello, Welcome to the BlackJack Card Game program by Dean Kurilich. \n"
-# print(intro_text)
-# input("Press hit enter to continue: ")
-# rules = "\nThe rules of the game are as follows: \n\n" \
-#         "The game is a simple player vs computer match up. The goal of the game is to have a final higher score\n" \
-#         "than the dealer. If you score higher than 21 you will Bust and automatically lose. To start each game, \n" \
-#         "the player is dealt two cards from a shuffled, standard 52 card deck. The dealer is also dealt two cards,\n" \
-#         "however only one of those cards will be visible to you as the player. The player will be prompted with the\n" \
-#         "option to Hit or Stay. Choosing to Hit means you will be dealt another card, with the potential to improve\n" \
-#         "your score, but also risking a Bust. Choosing to Stay means the player will keep their current score, and\n" \
-#         "the dealer's turn will start. The dealer plays using a standard set of rules. If the dealer's score is\n" \
-#         "less than or equal to 16 then it will always Hit. If the dealer has a soft 17, meaning they have an Ace\n" \
-#         "and a 6 they will also always Hit. Otherwise the dealer will stay. When the dealer's turn ends, the final\n" \
-#         "scores are displayed and a message appears on who has won. The scoring is based on the value of each card.\n" \
-#         "All face cards are worth 10 points, 2 through 9 are with their number value, and an Ace can be 1 or 11\n" \
-#         "points. If a player is dealt an Ace and a 10 point card, they automatically win with a BlackJack.\n"
-# print(rules)
-# start_game = "To start playing press enter: "
-# input(start_game)
+intro_text = "\nHello, Welcome to the BlackJack Card Game program by Dean Kurilich. \n"
+print(intro_text)
+input("Press hit enter to continue: ")
+rules = "\nThe rules of the game are as follows: \n\n" \
+        "The game is a simple player vs computer match up. The goal of the game is to have a final higher score\n" \
+        "than the dealer. If you score higher than 21 you will Bust and automatically lose. To start each game, \n" \
+        "the player is dealt two cards from a shuffled, standard 52 card deck. The dealer is also dealt two cards,\n" \
+        "however only one of those cards will be visible to you as the player. The player will be prompted with the\n" \
+        "option to Hit or Stay. Choosing to Hit means you will be dealt another card, with the potential to improve\n" \
+        "your score, but also risking a Bust. Choosing to Stay means the player will keep their current score, and\n" \
+        "the dealer's turn will start. The dealer plays using a standard set of rules. If the dealer's score is\n" \
+        "less than or equal to 16 then it will always Hit. If the dealer has a soft 17, meaning they have an Ace\n" \
+        "and a 6 they will also always Hit. Otherwise the dealer will stay. When the dealer's turn ends, the final\n" \
+        "scores are displayed and a message appears on who has won. The scoring is based on the value of each card.\n" \
+        "All face cards are worth 10 points, 2 through 9 are with their number value, and an Ace can be 1 or 11\n" \
+        "points. If a player is dealt an Ace and a 10 point card, they automatically win with a BlackJack.\n"
+print(rules)
+start_game = "To start playing press enter: "
+input(start_game)
 
 
 class Card:
@@ -52,6 +52,17 @@ class Card:
         print("|             |")
         print("|             |")
         print("|           " + self.suit + "|")
+        print(" -------------")
+
+    def print_blank_card(self):
+        print(" -------------")
+        print("|             |")
+        print("|             |")
+        print("|             |")
+        print("|             |")
+        print("|             |")
+        print("|             |")
+        print("|             |")
         print(" -------------")
 
 
@@ -97,7 +108,7 @@ class PlayGame:
         self.player_cards.append(player_1)
         self.player_cards.append(player_2)
         print("Dealer Cards:")
-        dealer_1.print_card()
+        dealer_1.print_blank_card()
         dealer_2.print_card()
         print("Player Cards: ")
         player_1.print_card()
