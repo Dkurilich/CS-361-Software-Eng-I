@@ -4,15 +4,14 @@
 #
 
 
-
-
 import random
+import time
 
 # introduction code to define game play
 
 intro_text = "\nHello, Welcome to the BlackJack Card Game program by Dean Kurilich. \n"
 print(intro_text)
-input("Press hit enter to continue: ")
+input("Press enter to continue: ")
 rules = "\nThe rules of the game are as follows: \n\n" \
         "The game is a simple player vs computer match up. The goal of the game is to have a final higher score\n" \
         "than the dealer. If you score higher than 21 you will Bust and automatically lose. To start each game, \n" \
@@ -30,13 +29,13 @@ print(rules)
 start_game = "To start playing press enter: "
 input(start_game)
 
+
 class Card:
     """represents an individual card used in the game"""
 
     def __init__(self, suit, name, value):
         self.suit = suit
         self.name = name
-        self.card_name = suit + name
         self.value = value
 
     def print_card(self):
@@ -69,7 +68,7 @@ class CardDeck:
     """This class generates cards for gameplay and tracks cards active in the game"""
 
     def __init__(self):
-        self.suits = ["♥","♦","♣","♠"]
+        self.suits = ["♥", "♦", "♣", "♠"]
         self.values = [("A", 1), ("K", 10), ("Q", 10), ("J", 10), ("10", 10), ("9", 9), ("8", 8), ("7", 7),
                        ("6", 6), ("5", 5), ("4", 4), ("3", 3), ("2", 2)]
         self.dealt_cards = []
@@ -78,11 +77,11 @@ class CardDeck:
         random_suit = random.randint(1, 3)
         random_value = random.randint(0, 12)
         new_suit = self.suits[random_suit]
-        new_name = self.values[random_value][0]
+        new_name = new_suit + self.values[random_value][0]
         new_value = self.values[random_value][1]
         new_card = Card(new_suit, new_name, new_value)
         if new_card.name not in self.dealt_cards:
-            self.dealt_cards.append(new_card)
+            self.dealt_cards.append(new_name)
         else:
             self.generate_card()
         return new_card
@@ -91,13 +90,20 @@ class CardDeck:
 class PlayGame:
 
     def __init__(self):
-        self.player_score = 0
-        self.dealer_score = 0
+        self.player_score = None
+        self.dealer_score = None
         self.player_cards = []
         self.dealer_cards = []
         self.card_deck = CardDeck()
 
     def start_game(self):
+        # reset all local variables
+        self.player_score = None
+        self.dealer_score = None
+        self.player_cards = []
+        self.dealer_cards = []
+        self.card_deck = CardDeck()
+        # deals 2 cards to dealer and player and displays cards in first round of gameplay
         dealer_1 = self.card_deck.generate_card()
         dealer_2 = self.card_deck.generate_card()
         self.dealer_cards.append(dealer_1)
@@ -106,13 +112,118 @@ class PlayGame:
         player_2 = self.card_deck.generate_card()
         self.player_cards.append(player_1)
         self.player_cards.append(player_2)
+        self.dealer_score = self.calculate_score_microservice(self.dealer_cards)
         print("Dealer Cards:")
         dealer_1.print_blank_card()
         dealer_2.print_card()
+        self.player_score = self.calculate_score_microservice(self.player_cards)
         print("Player Cards: ")
         player_1.print_card()
         player_2.print_card()
+        self.evaluate_player_score()
+        self.continue_gameplay()
+
+    def calculate_score_microservice(self, cards_list):
+        # prints a hand with spaces between values into card_hand.txt file
+        # microservice returns two scores (if A is 1 or 11 points)
+        # score is saved in self.player_score or self.dealer_score variable with 2 values as a list (second score is 0
+        # if there's no Ace in the hand
+        cards_values = []
+        for card in cards_list:
+            cards_values.append(card.value)
+        cards_values = ' '.join(str(card) for card in cards_values)
+        with open('card_hand.txt', 'w', encoding="utf-8") as card_hand_file:
+            card_hand_file.write(cards_values)
+        card_hand_file.close()
+        time.sleep(0.1)
+        with open('card_hand_score.txt', 'r+', encoding="utf-8") as card_score_file:
+            card_score = card_score_file.read()
+        card_score_file.close()
+        while card_score == '':
+            with open('card_hand_score.txt', 'r+', encoding="utf-8") as card_score_file:
+                card_score = card_score_file.read()
+            card_score_file.close()
+        card_score = list(card_score.split(" "))
+        return card_score
+
+    def winner(self):
+        if "21" in self.player_score:
+            print("Congratulations, you have a 21! A BlackJack!")
+            print("Player Wins!")
+        print()
+        play_again = int(input("Type 1 and press enter to play again or type 2 and enter to exit: "))
+        if play_again == 1:
+            self.start_game()
+            return
+        elif play_again == 2:
+            print()
+            print("Goodbye, thanks for playing!")
+        else:
+            print()
+            print("Invalid entry, try again.")
+            self.winner()
+
+    def loser(self):
+        print()
+        print("Sorry, you lose this hand")
+        print()
+        play_again = int(input("Type 1 and press enter to play again or type 2 and enter to exit: "))
+        if play_again == 1:
+            self.start_game()
+        elif play_again == 2:
+            print()
+            print("Goodbye, thanks for playing!")
+        else:
+            print()
+            print("Invalid entry, try again.")
+            self.loser()
+
+    def continue_gameplay(self):
+        print()
+        next_move = input("Type 1 and enter to hit or type 2 and enter to stay: ")
+        if next_move == "1":
+            new_card = self.card_deck.generate_card()
+            self.player_cards.append(new_card)
+            self.player_score = self.calculate_score_microservice(self.player_cards)
+            print("Player Cards: ")
+            for card in self.player_cards:
+                card.print_card()
+            self.evaluate_player_score()
+            self.continue_gameplay()
+        elif next_move == "2":
+            self.dealer_continue_gameplay()
+            return
+        else:
+            print()
+            print("Invalid entry, try again.")
+            self.dealer_continue_gameplay()
+
+    def dealer_continue_gameplay(self):
+        placeholder = 0
+
+    def evaluate_player_score(self):
+        if "21" in self.player_score:
+            self.winner()
+        elif int(self.player_score[0]) > 21:
+            if int(self.player_score[1]) == 0 or int(self.player_score[1]) > 21:
+                print("Player score: ", str(self.player_score[0]))
+                print("Player busts, Player score over 21")
+                self.loser()
+        else:
+            score_count = 0
+            for score in self.player_score:
+                if 0 < int(score) < 22:
+                    if score_count > 0:
+                        print()
+                        print("Or")
+                        print()
+                    score_count += 1
+                    print("Player score: ", str(score))
 
 
+# initialize game and variables
 lets_play = PlayGame()
+
+# begin game play
 lets_play.start_game()
+dean = 5
