@@ -10,11 +10,13 @@ def read_hand():
 
     with open('hand.txt', 'r') as f:
         hand = f.readline().split(',')
+    if hand == ['']:
+        hand = ['2', '2']
     return hand
 
 
 def calculate_score(hand):
-    """Takes in hand[] and returns hand calulated score"""
+    """Takes in hand[] and returns hand calculated score"""
 
     score = 0
     high_ace_score = 0

@@ -5,6 +5,7 @@
 
 
 import random
+import sys
 import time
 
 # introduction code to define game play
@@ -39,6 +40,7 @@ class Card:
         self.value = value
 
     def print_card(self):
+        """This function will print a card."""
         print(" -------------")
         print("| " + self.suit + "           |")
         print("|             |")
@@ -53,6 +55,7 @@ class Card:
         print(" -------------")
 
     def print_blank_card(self):
+        """This function print a blank card for the dealers first turn."""
         print(" -------------")
         print("|             |")
         print("|             |")
@@ -97,6 +100,8 @@ class PlayGame:
         self.card_deck = CardDeck()
 
     def start_game(self):
+        """This function starts the beginning of the game, displaying 1 dealer card face up and 1 face down
+        and also displays the initial 2 player cards face up"""
         # reset all local variables
         self.player_score = None
         self.dealer_score = None
@@ -124,6 +129,7 @@ class PlayGame:
         self.continue_gameplay()
 
     def calculate_score_microservice(self, cards_list):
+        """This function takes a hand and calls the microservice to calculate the score"""
         # prints a hand with spaces between values into hand.txt file
         # microservice returns two scores (if A is 1 or 11 points)
         # score is saved in self.player_score or self.dealer_score variable with 2 values as a list (second score is 0
@@ -144,9 +150,13 @@ class PlayGame:
                 card_score = card_score_file.read()
             card_score_file.close()
         card_score = list(card_score.split(","))
+        if len(card_score) == 1:
+            card_score.append("0")
         return card_score
 
     def winner(self):
+        """Determines if the player has won their turn via a blackjack and displays congratulatory message.
+        Else it prompts the player to hit or stay"""
         if "21" in self.player_score:
             print("Congratulations, you have a 21! A BlackJack!")
             print("Player Wins!")
@@ -158,12 +168,15 @@ class PlayGame:
         elif play_again == 2:
             print()
             print("Goodbye, thanks for playing!")
+            sys.exit()
         else:
             print()
             print("Invalid entry, try again.")
             self.winner()
 
     def loser(self):
+        """If a player has busted or lost their hand, they receive losing message and then are prompted to continue
+        to the next hand or quit"""
         print()
         print("Sorry, you lose this hand")
         print()
@@ -173,12 +186,14 @@ class PlayGame:
         elif play_again == 2:
             print()
             print("Goodbye, thanks for playing!")
+            sys.exit()
         else:
             print()
             print("Invalid entry, try again.")
             self.loser()
 
     def continue_gameplay(self):
+        """"This function reads player input to hit or stay and generates cards and scores with displays accordingly"""
         print()
         next_move = input("Type 1 and enter to hit or type 2 and enter to stay: ")
         if next_move == "1":
@@ -199,9 +214,76 @@ class PlayGame:
             self.dealer_continue_gameplay()
 
     def dealer_continue_gameplay(self):
-        placeholder = 0
+        """If a player decides to stay, then this function is activated to represent the dealer turn."""
+        time.sleep(1)
+        print("")
+        print("Dealer Turn, finalizing hand")
+        print("")
+        # for card in self.dealer_cards:
+        #     card.print_card()
+        # self.evaluate_dealer_score()
+        # if self.dealer_score[0] >= 17 or self.dealer_score[0] >=17:
+
+        while int(self.dealer_score[0]) < 17:
+            if int(self.dealer_score[1]) == 0:
+                new_card = self.card_deck.generate_card()
+                self.dealer_cards.append(new_card)
+                self.dealer_score = self.calculate_score_microservice(self.dealer_cards)
+            elif 17 <= int(self.dealer_score[1]) <= 21:
+                self.evaluate_dealer_score()
+                break
+        if int(self.dealer_score[0]) >= 17:
+            self.evaluate_dealer_score()
+
+    def evaluate_dealer_score(self):
+        """This function determines if the player has a winning or losing hand and displays their score accordingly"""
+        if "21" in self.dealer_score:
+            print("Sorry, dealer has a 21! A BlackJack!")
+            time.sleep(1)
+            print("Here is the dealer's final hand:")
+            for card in self.dealer_cards:
+                card.print_card()
+            self.loser()
+        elif int(self.dealer_score[0]) > 21:
+            if int(self.dealer_score[1]) == 0 or int(self.dealer_score[1]) > 21:
+                print("Dealer score: ", str(self.dealer_score[0]))
+                print("Dealer busts!")
+                time.sleep(1)
+                print("Here is the dealer's final hand:")
+                for card in self.dealer_cards:
+                    card.print_card()
+                print("Congratulations! Player wins!")
+                self.winner()
+        elif int(self.dealer_score[0]) > int(self.dealer_score[1]):
+            print("Dealer score: ", str(self.dealer_score[0]))
+            if int(self.player_score[0] > self.dealer_score[0]):
+                print("Congratulations! Player wins!")
+                time.sleep(1)
+                print("Here is the dealer's final hand:")
+                for card in self.dealer_cards:
+                    card.print_card()
+                self.winner()
+            else:
+                print("Sorry, dealer wins.")
+                print("Dealer score: ", str(self.dealer_score[0]))
+                time.sleep(1)
+                print("Here is the dealer's final hand:")
+                for card in self.dealer_cards:
+                    card.print_card()
+                self.loser()
+        # else:
+        #     score_count = 0
+        #     for score in self.player_score:
+        #         if 0 < int(score) < 22:
+        #             if score_count > 0:
+        #                 print()
+        #                 print("Or")
+        #                 print()
+        #             score_count += 1
+        #             print("Player score: ", str(score))
 
     def evaluate_player_score(self):
+        """This function determines if the player has a winning or losing hand and displays their score accordingly"""
         if "21" in self.player_score:
             self.winner()
         elif int(self.player_score[0]) > 21:
