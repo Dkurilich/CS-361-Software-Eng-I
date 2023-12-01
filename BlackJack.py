@@ -69,7 +69,7 @@ class CardDeck:
 
     def __init__(self):
         self.suits = ["♥", "♦", "♣", "♠"]
-        self.values = [("A", 1), ("K", 10), ("Q", 10), ("J", 10), ("10", 10), ("9", 9), ("8", 8), ("7", 7),
+        self.values = [("A", "A"), ("K", 10), ("Q", 10), ("J", 10), ("10", 10), ("9", 9), ("8", 8), ("7", 7),
                        ("6", 6), ("5", 5), ("4", 4), ("3", 3), ("2", 2)]
         self.dealt_cards = []
 
@@ -124,26 +124,26 @@ class PlayGame:
         self.continue_gameplay()
 
     def calculate_score_microservice(self, cards_list):
-        # prints a hand with spaces between values into card_hand.txt file
+        # prints a hand with spaces between values into hand.txt file
         # microservice returns two scores (if A is 1 or 11 points)
         # score is saved in self.player_score or self.dealer_score variable with 2 values as a list (second score is 0
         # if there's no Ace in the hand
         cards_values = []
         for card in cards_list:
             cards_values.append(card.value)
-        cards_values = ' '.join(str(card) for card in cards_values)
-        with open('card_hand.txt', 'w', encoding="utf-8") as card_hand_file:
+        cards_values = ','.join(str(card) for card in cards_values)
+        with open('hand.txt', 'w', encoding="utf-8") as card_hand_file:
             card_hand_file.write(cards_values)
         card_hand_file.close()
         time.sleep(0.1)
-        with open('card_hand_score.txt', 'r+', encoding="utf-8") as card_score_file:
+        with open('hand_score.txt', 'r+', encoding="utf-8") as card_score_file:
             card_score = card_score_file.read()
         card_score_file.close()
         while card_score == '':
-            with open('card_hand_score.txt', 'r+', encoding="utf-8") as card_score_file:
+            with open('hand_score.txt', 'r+', encoding="utf-8") as card_score_file:
                 card_score = card_score_file.read()
             card_score_file.close()
-        card_score = list(card_score.split(" "))
+        card_score = list(card_score.split(","))
         return card_score
 
     def winner(self):

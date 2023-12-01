@@ -1,5 +1,5 @@
 while True:
-    with open('card_hand.txt', 'r+', encoding="utf-8") as card_hand:
+    with open('hand.txt', 'r+', encoding="utf-8") as card_hand:
         cards = card_hand.read()
     card_hand.close()
     if cards == '':
@@ -23,6 +23,6 @@ while True:
         # 2 scores are written every time, in case there is an Ace with two scoring options
         cards_values = [score, score_ace]
         cards_values = ' '.join(str(card) for card in cards_values)
-        with open('card_hand_score.txt', 'w', encoding="utf-8") as card_score_file:
+        with open('hand_score.txt', 'w', encoding="utf-8") as card_score_file:
             card_score_file.write(cards_values)
         card_score_file.close()
