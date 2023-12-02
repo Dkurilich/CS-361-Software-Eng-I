@@ -1,15 +1,12 @@
 # Dean Kurilich
 # CS361 Portfolio Project
 # This is a program that plays 1-1 game of BlackJack with a player and the dealer.
-#
-
 
 import random
 import sys
 import time
 
 # introduction code to define game play
-
 intro_text = "\nHello, Welcome to the BlackJack Card Game program by Dean Kurilich. \n"
 print(intro_text)
 input("Press enter to continue: ")
@@ -77,6 +74,7 @@ class CardDeck:
         self.dealt_cards = []
 
     def generate_card(self):
+        """generate a random card from the deck, if the card already exists, it checks for a new card"""
         random_suit = random.randint(1, 3)
         random_value = random.randint(0, 12)
         new_suit = self.suits[random_suit]
@@ -91,6 +89,8 @@ class CardDeck:
 
 
 class PlayGame:
+    """this class defines the black jack game and reference the card and card deck classes. The game is played
+    through this class, where the main objects are the dealer and player and their hands and scores"""
 
     def __init__(self):
         self.player_score = None
@@ -156,7 +156,7 @@ class PlayGame:
 
     def winner(self):
         """Determines if the player has won their turn via a blackjack and displays congratulatory message.
-        Else it prompts the player to hit or stay"""
+        Else it prompts the player to quit or play again."""
         if "21" in self.player_score:
             print("Congratulations, you have a 21! A BlackJack!")
             print("Player Wins!")
@@ -206,6 +206,8 @@ class PlayGame:
             self.evaluate_player_score()
             self.continue_gameplay()
         elif next_move == "2":
+            if int(self.player_score[0]) < int(self.player_score[1]) <= 21:
+                self.player_score[0] = self.player_score[1]
             self.dealer_continue_gameplay()
             return
         else:
@@ -219,11 +221,6 @@ class PlayGame:
         print("")
         print("Dealer Turn, finalizing hand")
         print("")
-        # for card in self.dealer_cards:
-        #     card.print_card()
-        # self.evaluate_dealer_score()
-        # if self.dealer_score[0] >= 17 or self.dealer_score[0] >=17:
-
         while int(self.dealer_score[0]) < 17:
             if int(self.dealer_score[1]) == 0:
                 new_card = self.card_deck.generate_card()
@@ -271,16 +268,6 @@ class PlayGame:
                 for card in self.dealer_cards:
                     card.print_card()
                 self.loser()
-        # else:
-        #     score_count = 0
-        #     for score in self.player_score:
-        #         if 0 < int(score) < 22:
-        #             if score_count > 0:
-        #                 print()
-        #                 print("Or")
-        #                 print()
-        #             score_count += 1
-        #             print("Player score: ", str(score))
 
     def evaluate_player_score(self):
         """This function determines if the player has a winning or losing hand and displays their score accordingly"""
@@ -308,4 +295,3 @@ lets_play = PlayGame()
 
 # begin game play
 lets_play.start_game()
-dean = 5
